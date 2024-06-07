@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Signal Processing API</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <div class="container">
         <h1>Signal Processing API</h1>
         <form id="signal-form">
             <div class="form-group">
-                <label for="equation">Enter Signal Equation (e.g., np.sin(x)): </label>
+                <label for="equation">Enter Signal Equation (e.g., sin(x)): </label>
                 <input type="text" id="equation" name="equation" required>
             </div>
             <div class="form-group">
@@ -24,62 +25,6 @@
         </form>
         <canvas id="chart"></canvas>
     </div>
-    <script>
-        document.getElementById('signal-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const equation = document.getElementById('equation').value;
-            const processing = document.getElementById('processing').value;
-
-            fetch('/api/process_signal', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ equation, processing }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    alert(data.error);
-                } else {
-                    visualizeData(data);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
-
-        function visualizeData(data) {
-            const ctx = document.getElementById('chart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: data.x_values,
-                    datasets: [
-                        {
-                            label: 'Original Signal',
-                            data: data.original_signal,
-                            borderColor: 'blue',
-                            fill: false,
-                        },
-                        {
-                            label: 'Processed Signal',
-                            data: data.processed_signal,
-                            borderColor: 'red',
-                            fill: false,
-                        }
-                    ],
-                },
-                options: {
-                    scales: {
-                        x: { title: { display: true, text: 'x' } },
-                        y: { title: { display: true, text: 'Amplitude' } },
-                    },
-                },
-            });
-        }
-    </script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
-
